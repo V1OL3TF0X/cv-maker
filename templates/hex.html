@@ -1,0 +1,8 @@
+<div class="hex_tile">
+     {% match self.0 %}
+        {% when Content::Img with (url) %}
+            <img src="{{ url }}">
+        {% when Content::Text with (text) %}
+         <div><p>{{ text }}</p> </div>
+            {% endmatch %} 
+</div>

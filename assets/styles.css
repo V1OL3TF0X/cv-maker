@@ -1,0 +1,69 @@
+:root {
+    font-size: 16px;
+    font-family: 'Montserrat', sans-serif;``
+}
+html {
+    --hex-ratio: 1.1547;
+}
+.hex_main {
+  display:flex;
+  --s: 100px;  /* size  */
+  --m: 4px;    /* margin */
+  --f: calc(var(--s) * 1.732 + 4 * var(--m) - 1px); 
+  padding-bottom: calc(var(--s) * var(--hex-ratio) / 4)
+}
+
+.hex_container {
+  font-size: 0; /* disable white space between inline block element */
+}
+
+.hex_tile {
+  color: white;
+  font-weight: 400;
+  font-variation-settings: "ital" 0.5;
+  width: var(--s);
+  margin: var(--m);
+  height: calc(var(--s) * var(--hex-ratio));
+  display: inline-block;
+  font-size:initial;
+  clip-path: polygon(0% 25%, 0% 75%, 50% 100%, 100% 75%, 100% 25%, 50% 0%);
+  margin-bottom: calc(var(--m) - var(--s) * 0.2885);
+  background-size: cover;
+  background-image: linear-gradient(to top right, #FE9900, #B008C4);
+  overflow: hidden;
+}
+
+.hex_tile > div {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    align-items: center;
+}
+.hex_tile > div > p {
+  padding: 0;
+  margin: 0;
+  text-align: center;
+}
+
+.hex_tile img {
+    --p: var(--inside-space, calc(var(--m) * 1.5));
+    --mh: calc(var(--p) * var(--hex-ratio));
+    --w: calc(var(--s) - 2 * var(--p));
+    padding: var(--mh) var(--p);
+    width: var(--w);
+    height: calc(var(--w) * var(--hex-ratio));
+    clip-path: polygon(var(--p) calc(25% + var(--mh) / 2),
+                       var(--p) calc(75% - var(--mh) / 2), 
+                       50% calc(100% - var(--mh)), 
+                       calc(100% - var(--p)) calc(75% - var(--mh) / 2), 
+                       calc(100% - var(--p)) calc(25% + var(--mh) / 2), 
+                       50% var(--mh));
+}
+
+.hex_container::before {
+  content: "";
+  width: calc(var(--s) / 2 + var(--m));
+  float: left;
+  height: 120%; 
+  shape-outside: repeating-linear-gradient(#0000 0 calc(var(--f) - 3px), #000 0 var(--f));
+}
