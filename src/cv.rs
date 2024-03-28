@@ -7,11 +7,13 @@ use crate::{components::{Contact, ExperienceList, Interest, Me, Skill},hexgrid::
     Hexgrid,
 }};
 
+pub const BG_ID: &str = "bg-gradient";
+
 #[derive(Template, Default)]
 #[template(path = "cv.html")]
-struct CV {
-    me: Me,
-    about: String,
+struct CV<'a> {
+    me: Me<'a>,
+    about: &'a str,
     experience: ExperienceList,
     interest: Vec<Interest>,
     contact: Contact,
@@ -22,6 +24,7 @@ struct CV {
 pub async fn cv_page() -> impl IntoResponse {
     Html(
         CV {
+            me: Me::new("https://picsum.photos/200/300", "My title", "My Description"),
             capabilities: Hexgrid::from_content(vec![
                 Content::Text("Something".into()),
                 Content::Text("Something else".into()),

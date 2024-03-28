@@ -11,16 +11,13 @@
 
   <body>
       {% block content %}{% endblock %}
-  <svg>
+  <svg style="position: absolute; width: 0; height: 0; pointer-events: none; user-select: none;">
       <defs>
-        <linearGradient id="simple-gradient" transform="rotate(90)">
+      <linearGradient id="{{ crate::cv::BG_ID }}">
             <stop offset="5%" stop-color="#B008C4" />
             <stop offset="95%" stop-color="#FE9900" />
         </linearGradient>
       </defs>
-      <symbol id="gradient-bg" viewBox="0 0 1 1">
-        <rect x="0" y="0" w="1" h="1" fill="url(#simple-gradient)"/>
-      </symbol>
   </svg>
   </body>
 </html>

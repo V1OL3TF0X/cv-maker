@@ -5,6 +5,44 @@
 html {
     --hex-ratio: 1.1547;
 }
+
+body {
+    width: 100%;
+    height: 100dvh;
+    margin: 0;
+}
+
+.main_backdrop {
+    position: relative;
+    width:100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+svg.bg  {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+}
+
+.cv_body {
+    width: 100%;
+    height: calc(100% - 4rem);
+    max-width: 82.7rem;
+    max-height: 116.9rem;
+    background: white;
+    display: flex;
+    gap: 5rem;
+    margin: 2rem auto;
+    box-sizing: border-box;
+    section {
+        width: 100%;
+        background: red;
+    }
+}
+
 .hex_main {
   display:flex;
   --s: 100px;  /* size  */
