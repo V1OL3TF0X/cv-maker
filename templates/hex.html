@@ -1,4 +1,6 @@
+{% import "macros.html" as macros %}
 <div class="hex_tile">
+    {% call macros::bg_svg(135, true)%}
      {% match self.0 %}
         {% when Content::Img with (url) %}
             <img src="{{ url }}">

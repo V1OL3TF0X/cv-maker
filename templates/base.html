@@ -14,8 +14,12 @@
   <svg style="position: absolute; width: 0; height: 0; pointer-events: none; user-select: none;">
       <defs>
       <linearGradient id="{{ crate::cv::BG_ID }}">
-            <stop offset="5%" stop-color="#B008C4" />
-            <stop offset="95%" stop-color="#FE9900" />
+            <stop offset="5%" stop-color="var(--gradient-start)" />
+            <stop offset="95%" stop-color="var(--gradient-end)" />
+        </linearGradient>
+        <linearGradient id="{{ crate::cv::BG_ID }}-hex">
+            <stop offset="30%" stop-color="var(--gradient-start)" />
+            <stop offset="70%" stop-color="var(--gradient-end)" />
         </linearGradient>
       </defs>
   </svg>

@@ -1,5 +1,7 @@
+{% import "macros.html" as macros %}
 <div class="me_container">
     <div class="hex_tile me_profile">
+        {% call macros::bg_svg(135, true) %} 
         <img src="{{ photo_url }}" />
     </div>
     <div class="me_desc">

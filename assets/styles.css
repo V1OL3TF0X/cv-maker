@@ -4,6 +4,8 @@
 }
 html {
     --hex-ratio: 1.1547;
+    --gradient-start: #B008C4;
+    --gradient-end: #FE9900;
 }
 
 body {
@@ -67,8 +69,9 @@ svg.bg  {
     clip-path: polygon(0% 25%, 0% 75%, 50% 100%, 100% 75%, 100% 25%, 50% 0%);
     margin-bottom: calc(var(--m) - var(--s) * 0.2885);
     background-size: cover;
-    background-image: linear-gradient(to top right, #FE9900, #B008C4);
     overflow: hidden;
+    position: relative;
+    isolation: isolate;
 }
 
 .hex_tile > div {
