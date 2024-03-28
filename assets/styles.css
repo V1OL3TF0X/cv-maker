@@ -15,7 +15,6 @@ html {
 
 body {
     width: 100%;
-    height: 100dvh;
     margin: 0;
 }
 
@@ -120,6 +119,9 @@ svg.bg  {
     font-size: 1.5rem;
     padding-left: 0.6rem;
     border-left: 0.5rem solid var(--gradient-start);
+    & ~ * {
+        margin-left: 1.1rem;
+    }
 }
 
 .me_container {
@@ -146,11 +148,32 @@ svg.bg  {
     }
 }
 
-.me_title {
+.gradient-headline {
     font-family: "Montserrat Static";
     font-size: 1.1rem;
     font-weight: bold;
     height: 1.2rem;
+}
+
+.skill_list {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+}
+
+.skill_item {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    svg .clip-path {
+        --perc-w: calc(100% - 0.2rem);
+        x:calc(var(--perc-w) * var(--ex) / 100 + 0.1rem);
+        y:0.1rem;
+        width:calc((var(--perc-w)) * (100 - var(--ex)) / 100);
+        height:calc(var(--perc-w));
+
+    }
 }
 
 @page {
@@ -170,7 +193,7 @@ svg.bg  {
         width: 210mm;
         height: 297mm;
     }
-    .me_title {
+    .gradient-headline {
         height: 1.6rem;
         font-size: 1.3rem;
     }

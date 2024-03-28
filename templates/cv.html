@@ -11,9 +11,13 @@
                 {% call macros::section_title("About me") %}
                 <p>{{ about|safe }}</p>
             </section>
+            <section>
+                {% call macros::section_title("My Skills") %}
+                {{ skills|safe }}
+            </section>
         </section>
         <section>
-            {% call macros::section_title("My capabilities") %}
+            {% call macros::section_title("My Capabilities") %}
             {{ capabilities|safe }}
         </section>
     </main>

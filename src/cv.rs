@@ -2,10 +2,10 @@ use askama::Template;
 use askama_axum::IntoResponse;
 use axum::response::Html;
 
-use crate::{components::{Contact, ExperienceList, Interest, Me, Skill},hexgrid::{
-    hex::Content,
-    Hexgrid,
-}};
+use crate::{
+    components::{Contact, ExperienceList, Interest, Me, SkillList},
+    hexgrid::{Content, Hexgrid},
+};
 
 pub const BG_ID: &str = "bg-gradient";
 
@@ -17,7 +17,7 @@ struct CV<'a> {
     experience: ExperienceList,
     interest: Vec<Interest>,
     contact: Contact,
-    skills: Vec<Skill>,
+    skills: SkillList<'a>,
     capabilities: Hexgrid,
 }
 
@@ -26,6 +26,16 @@ pub async fn cv_page() -> impl IntoResponse {
         CV {
             me: Me::new("https://picsum.photos/200/300", "My name", "My title"),
             about: "Lorem ipsum dolor sit amet. asdhjkashdkjasdhjkashdk sdas asdas asdsa asd asd asdasdas as asdas adas sas as.<br><br>askldjj l klasjdlk  kjalsl lkasj slkasjd aslkdj alksdj alksjd lkassj  aklsjdl ksjalksj  aksjl jklajld s",
+            skills: SkillList::from_list(vec![
+                ("Html/CSS", 60),
+                ("React", 85),
+                ("Vue", 30),
+                ("Rust", 50),
+                ("Typescript", 40),
+                ("PHP", 30),
+                ("Git", 90),
+            ], "Lorem ipsum dolor sit amet. asdhjkashdkjasdhjkashdk sdas asdas asdsa asd asd asdasdas as asdas adas sas as.<br><br>askldjj l klasjdlk  kjalsl lkasj slkasjd aslkdj alksdj alksjd lkassj  aklsjdl ksjalksj  aksjl jklajld s",
+).unwrap(),
             capabilities: Hexgrid::from_content(vec![
                 Content::Text("Something".into()),
                 Content::Text("Something else".into()),

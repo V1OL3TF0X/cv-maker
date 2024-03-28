@@ -17,3 +17,9 @@
 {% macro section_title(title) %}
 <h3 class="section_heading">{{ title }}</h3>
 {% endmacro%}
+
+{% macro gradient_headline(title) %}
+<svg viewBox="0 0 100 1.2rem" class="gradient-headline" width="100%" fill="url(#{{ crate::cv::BG_ID}})">
+    <text x="0" y="1rem">{{ title }}</text>
+</svg>
+{% endmacro %}

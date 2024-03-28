@@ -6,8 +6,6 @@
     </div>
     <div class="me_desc">
         <h2 class="me_name">{{ name }}</h2>
-        <svg viewBox="0 0 100 1.2rem" class="me_title" width="100%" fill="url(#{{ crate::cv::BG_ID}})">
-            <text x="0" y="1rem">{{ title }}</text>
-        </svg>
+        {% call macros::gradient_headline(title) %}
     </div>
 </div>
