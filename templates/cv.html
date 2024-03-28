@@ -7,9 +7,13 @@
     <main class="cv_body">
         <section>
             {{ me|safe }}
+            <section>
+                {% call macros::section_title("About me") %}
+                <p>{{ about|safe }}</p>
+            </section>
         </section>
         <section>
-            My capabilities
+            {% call macros::section_title("My capabilities") %}
             {{ capabilities|safe }}
         </section>
     </main>

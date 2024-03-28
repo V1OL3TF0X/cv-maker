@@ -1,3 +1,8 @@
+@font-face {
+    font-family: "Montserrat Static";
+    src: url("/assets/montserrat.bold.ttf") format("truetype");
+}
+
 :root {
     font-size: 16px;
     font-family: 'Montserrat', sans-serif;``
@@ -5,7 +10,7 @@
 html {
     --hex-ratio: 1.1547;
     --gradient-start: #B008C4;
-    --gradient-end: #FE9900;
+    --gradient-end: #FE7500;
 }
 
 body {
@@ -45,6 +50,7 @@ svg.bg  {
     }
 }
 
+
 .hex_main {
     display:flex;
     --s: 100px;  /* size  */
@@ -58,9 +64,7 @@ svg.bg  {
 }
 
 .hex_tile {
-    color: white;
     font-weight: 400;
-    font-variation-settings: "ital" 0.5;
     width: var(--s);
     margin: var(--m);
     height: calc(var(--s) * var(--hex-ratio));
@@ -81,6 +85,9 @@ svg.bg  {
     align-items: center;
 }
 .hex_tile > div > p {
+    color: #fefefe;
+    font-family: "Montserrat Static";
+    text-shadow: 2px 2px 4px black;
     padding: 0;
     margin: 0;
     text-align: center;
@@ -109,6 +116,12 @@ svg.bg  {
     shape-outside: repeating-linear-gradient(#0000 0 calc(var(--f) - 3px), #000 0 var(--f));
 }
 
+.section_heading {
+    font-size: 1.5rem;
+    padding-left: 0.6rem;
+    border-left: 0.5rem solid var(--gradient-start);
+}
+
 .me_container {
     display: flex;
     justify-content: flex-start;
@@ -120,6 +133,7 @@ svg.bg  {
     --s: 150px;
     --m: 6px;
     margin-bottom: 1px;
+    flex-shrink: 0;
 }
 
 .me_desc {
@@ -130,10 +144,34 @@ svg.bg  {
         padding: 0;
         margin: 0;
     }
-    .me_title {
-        font-weight: bold;
-    }
 }
 
+.me_title {
+    font-family: "Montserrat Static";
+    font-size: 1.1rem;
+    font-weight: bold;
+    height: 1.2rem;
+}
 
+@page {
+    size: A4;
+    margin: 0;
+}
 
+@media print {
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    :root {
+        font-size: 12px;
+    }
+    .cv_body {
+        width: 210mm;
+        height: 297mm;
+    }
+    .me_title {
+        height: 1.6rem;
+        font-size: 1.3rem;
+    }
+}
