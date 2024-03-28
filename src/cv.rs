@@ -24,7 +24,7 @@ struct CV<'a> {
 pub async fn cv_page() -> impl IntoResponse {
     Html(
         CV {
-            me: Me::new("https://picsum.photos/200/300", "My title", "My Description"),
+            me: Me::new("https://picsum.photos/200/300", "My name", "My title"),
             capabilities: Hexgrid::from_content(vec![
                 Content::Text("Something".into()),
                 Content::Text("Something else".into()),
