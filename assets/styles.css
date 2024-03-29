@@ -8,6 +8,7 @@
     font-family: 'Montserrat', sans-serif;``
 }
 html {
+    --cv-bg: #fff;
     --hex-ratio: 1.1547;
     --gradient-start: #B008C4;
     --gradient-end: #FE7500;
@@ -38,7 +39,7 @@ svg.bg  {
     height: calc(100% - 4rem);
     max-width: 82.7rem;
     max-height: 116.9rem;
-    background: white;
+    background: var(--cv-bg);
     display: flex;
     gap: 5rem;
     margin: 2rem auto;
@@ -176,6 +177,44 @@ svg.bg  {
     }
 }
 
+.interest-list {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.interest-plaque {
+    width: 5rem;
+    height: 5rem;
+    border-radius: 8%;
+    &::before {
+        content: "";
+        z-index: 1;
+        position: absolute;
+        inset: 6%;
+        border-radius: 6%;
+        background: var(--cv-bg);
+        -webkit-mask-image: var(--img);
+        mask-image: var(--img);
+        -webkit-mask-position: center;
+        mask-position: center;
+        -webkit-mask-size: 100% 100%;
+        mask-size: 100% 100%;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        mask-type: luminance;
+        mask-composite: exclude;
+        -webkit-mask-composite: xor;
+
+    }
+}
+
+*:has( > svg.bg) {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+}
+
 @page {
     size: A4;
     margin: 0;
@@ -185,6 +224,11 @@ svg.bg  {
     * {
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
+    }
+    .main_backdrop > svg.bg {
+        display: none;
+        width: 0px !important;
+        height: 0px !important;
     }
     :root {
         font-size: 12px;
