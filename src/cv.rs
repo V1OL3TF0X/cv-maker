@@ -3,7 +3,7 @@ use askama_axum::IntoResponse;
 use axum::response::Html;
 
 use crate::{
-    components::{Contact, ExperienceList, Interest, Me, SkillList},
+    components::{Contact, ExperienceList, InterestList, MaybeInterestList, Me, SkillList},
     hexgrid::{Content, Hexgrid},
 };
 
@@ -15,7 +15,7 @@ struct CV<'a> {
     me: Me<'a>,
     about: &'a str,
     experience: ExperienceList,
-    interest: Vec<Interest>,
+    interests: InterestList<'a>,
     contact: Contact,
     skills: SkillList<'a>,
     capabilities: Hexgrid,
@@ -36,6 +36,15 @@ pub async fn cv_page() -> impl IntoResponse {
                 ("Git", 90),
             ], "Lorem ipsum dolor sit amet. asdhjkashdkjasdhjkashdk sdas asdas asdsa asd asd asdasdas as asdas adas sas as.<br><br>askldjj l klasjdlk  kjalsl lkasj slkasjd aslkdj alksdj alksjd lkassj  aklsjdl ksjalksj  aksjl jklajld s",
 ).unwrap(),
+            interests: vec![
+                "/assets/github-cat.svg",
+                "/assets/github-cat.svg",
+                "/assets/github-cat.svg",
+                "/assets/github-cat.svg",
+                "/assets/github-cat.svg",
+                "/assets/github-cat.svg",
+                "/assets/github-cat.svg",
+            ].into_iter().collect::<MaybeInterestList>().0.unwrap(),
             capabilities: Hexgrid::from_content(vec![
                 Content::Text("Something".into()),
                 Content::Text("Something else".into()),

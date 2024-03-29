@@ -1,0 +1,8 @@
+{% import "macros.html" as macros %}
+<div class="interest-list">
+    {% for interest in self.0 %}
+    <div class="interest-plaque" style="--img: url({{ interest.interest_icon }});">
+        {% call macros::bg_svg(45, true) %}
+    </div>
+    {% endfor %}
+</div>
