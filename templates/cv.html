@@ -21,8 +21,14 @@
             </section>
         </section>
         <section>
+            <section>
+                {% call macros::section_title("Experience") %}
+                {{ experience|safe }}
+            </section>
+            <section>
             {% call macros::section_title("My Capabilities") %}
             {{ capabilities|safe }}
+            </section>
         </section>
     </main>
 </div>

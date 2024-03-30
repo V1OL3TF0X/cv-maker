@@ -20,7 +20,6 @@ body {
 }
 
 .main_backdrop {
-    position: relative;
     width:100%;
     height: 100%;
     display: flex;
@@ -203,9 +202,42 @@ svg.bg  {
         -webkit-mask-repeat: no-repeat;
         mask-repeat: no-repeat;
         mask-type: luminance;
-        mask-composite: exclude;
-        -webkit-mask-composite: xor;
 
+    }
+}
+
+.experience-list {
+    display: grid;
+    grid-template-columns: 1rem 1fr;
+    gap: 1rem;
+    ul {
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.7rem;
+        padding: 0;
+        li {
+            &::marker {
+                content: none;
+            }
+
+            & > * {
+                padding: 0;
+                margin: 0;
+            }
+            text {
+                font-size: .9rem;
+            }
+            h5 {
+                font-size: 1.4rem;
+            }
+            p {
+                font-size: .8rem;
+            }
+        }
+    }
+    #timeline-axis-mask {
+        --rh: 0px; 
     }
 }
 

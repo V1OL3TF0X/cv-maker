@@ -1,1 +1,18 @@
-Experience list
+{% import "macros.html" as macros %}
+<div class="experience-list">
+    <svg xmlns="http://www.w3.org/2000/svg" width="1.2rem" height="100%">
+        <rect x="0.5rem" y="0.9rem" width=".2rem" height="calc(100% - 0.9rem)" fill="url(#{{ crate::cv::BG_ID }}-top_right)"/>
+        {% for i in 0..self.0.len() %}
+            <circle fill="url(#{{ crate::cv::BG_ID }}-top_right)" cx=".6rem" style="cy: calc(((100% + 0.7rem) / {{ self.0.len() }}) * {{ i }} + .9rem);" r=".5rem" />
+        {% endfor %}
+    </svg>
+    <ul>
+        {% for experience in self.0 %}
+        <li>
+            <h5>{{ experience.name }}</h5>
+            {% call macros::gradient_headline(format!("{} - {}", experience.from, experience.to)) %}
+            <p> {{ experience.description }} </p>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
