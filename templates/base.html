@@ -12,22 +12,5 @@
 
   <body>
       {% block content %}{% endblock %}
-  <svg style="position: absolute; width: 0; height: 0; pointer-events: none; user-select: none;">
-      <defs>
-      <linearGradient id="{{ crate::cv::BG_ID }}">
-            <stop offset="5%" stop-color="var(--gradient-start)" />
-            <stop offset="95%" stop-color="var(--gradient-end)" />
-        </linearGradient>
-        <linearGradient href="#{{ crate::cv::BG_ID }}" id="{{ crate::cv::BG_ID }}-rev" gradientTransform="rotate(180, 0.5, 0.5)" />
-        <linearGradient href="#{{ crate::cv::BG_ID }}" id="{{ crate::cv::BG_ID }}-top_right" gradientTransform="rotate(-45, 0.5, 0.5)" />
-        <linearGradient id="{{ crate::cv::BG_ID }}-hex">
-            <stop offset="30%" stop-color="var(--gradient-start)" />
-            <stop offset="70%" stop-color="var(--gradient-end)" />
-        </linearGradient>
-      </defs>
-      <symbol id="gradient-circle" viewBox="0 0 2 2">
-        <circle fill="url(#{{ crate::cv::BG_ID }}-hex)" cx="1" cy="1" r=".70711" />
-      </symbol>
-  </svg>
   </body>
 </html>
