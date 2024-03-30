@@ -37,8 +37,9 @@ svg.bg  {
     max-width: 82.7rem;
     max-height: 116.9rem;
     background: var(--cv-bg);
-    display: flex;
+    display: grid;
     gap: 5rem;
+    grid-template-columns: 1fr 1fr;
     margin: 2rem auto;
     padding: 2rem;
     box-sizing: border-box;
@@ -241,13 +242,20 @@ svg.bg  {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    padding: 0;
 }
 .contact-kind {
+    text-transform: capitalize;
     background: linear-gradient(45deg, var(--gradient-start), var(--gradient-end));
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     font-weight: bold;
+}
+
+footer {
+    grid-column: span 2;
+    font-size: .5rem;
 }
 
 *:has( > svg.bg) {
