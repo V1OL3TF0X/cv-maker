@@ -5,22 +5,37 @@ use chrono::NaiveDate;
 
 use crate::{
     components::{
-        Contact, ExperienceList, InterestList, MaybeInterestList, Me, SkillList, TimeRange,
+        ContactList, ExperienceList, InterestList, MaybeInterestList, Me, SkillList, TimeRange,
     },
     hexgrid::{Content, Hexgrid},
 };
 
 pub const BG_ID: &str = "bg-gradient";
 
+struct Gradient<'a> {
+    start: &'a str,
+    end: &'a str,
+}
+
+impl<'a> Default for Gradient<'a> {
+    fn default() -> Self {
+        Self {
+            start: "#B008C4",
+            end: "#FE7500",
+        }
+    }
+}
+
 #[derive(Template, Default)]
 #[template(path = "cv.html")]
-struct CV<'a> {
-    me: Me<'a>,
+struct CV<'g, 'c, 'e, 's, 'm, 'a, 'i> {
+    gradient: Gradient<'g>,
+    me: Me<'m>,
     about: &'a str,
-    experience: ExperienceList<'a>,
-    interests: InterestList<'a>,
-    contact: Contact,
-    skills: SkillList<'a>,
+    experience: ExperienceList<'e>,
+    interests: InterestList<'i>,
+    contact: ContactList<'c>,
+    skills: SkillList<'s>,
     capabilities: Hexgrid,
 }
 
@@ -47,7 +62,7 @@ pub async fn cv_page() -> impl IntoResponse {
                 (NaiveDate::from_ymd(2021, 11, 30), TimeRange::Present, "Frontend Developer", "Lorem ipsum dolor sit amet. kfdas sakldj as ask daj a kl aa lksasd "),
                 (NaiveDate::from_ymd(2021, 11, 30), TimeRange::Present, "Frontend Developer", "Lorem ipsum dolor sit amet. kfdas sakldj as ask daj a kl aa lksasd "),
             ]),
-            interests: vec![
+            interests: MaybeInterestList::from_iter(vec![
                 "/assets/github-cat.svg",
                 "/assets/github-cat.svg",
                 "/assets/github-cat.svg",
@@ -55,7 +70,12 @@ pub async fn cv_page() -> impl IntoResponse {
                 "/assets/github-cat.svg",
                 "/assets/github-cat.svg",
                 "/assets/github-cat.svg",
-            ].into_iter().collect::<MaybeInterestList>().0.unwrap(),
+            ]).0.unwrap(),
+            contact: ContactList::from_iter(vec![
+                ("Phone", "+48 123 456 789"),
+                ("email", "email@example.com"),
+                ("github", "github.com/username"),
+            ]),
             capabilities: Hexgrid::from_content(vec![
                 Content::Text("Something".into()),
                 Content::Text("Something else".into()),

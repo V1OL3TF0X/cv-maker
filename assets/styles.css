@@ -5,13 +5,11 @@
 
 :root {
     font-size: 16px;
-    font-family: 'Montserrat', sans-serif;``
+    font-family: 'Montserrat', sans-serif;
 }
 html {
     --cv-bg: #fff;
     --hex-ratio: 1.1547;
-    --gradient-start: #B008C4;
-    --gradient-end: #FE7500;
 }
 
 body {
@@ -211,16 +209,13 @@ svg.bg  {
     grid-template-columns: 1rem 1fr;
     gap: 1rem;
     ul {
+        list-style: none;
         margin: 0;
         display: flex;
         flex-direction: column;
         gap: 0.7rem;
         padding: 0;
         li {
-            &::marker {
-                content: none;
-            }
-
             & > * {
                 padding: 0;
                 margin: 0;
@@ -239,6 +234,20 @@ svg.bg  {
     #timeline-axis-mask {
         --rh: 0px; 
     }
+}
+
+.contact-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+.contact-kind {
+    background: linear-gradient(45deg, var(--gradient-start), var(--gradient-end));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
 }
 
 *:has( > svg.bg) {

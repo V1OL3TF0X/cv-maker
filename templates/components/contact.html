@@ -1,0 +1,8 @@
+{% import "macros.html" as macros %}
+<ul class="contact-list">
+    {% for contact in self.0 %}
+        <li>
+            <span><span class="contact-kind"> {{ contact.kind }}:</span>&nbsp;{{ contact.info }}</span>
+        </li>
+    {% endfor %}
+</ul>
