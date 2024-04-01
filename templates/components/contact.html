@@ -2,7 +2,15 @@
 <ul class="contact-list">
     {% for contact in self.0 %}
         <li>
-            <span><span class="contact-kind"> {{ contact.kind }}:</span>&nbsp;{{ contact.info }}</span>
+            <span><span class="contact-kind">
+                {%- match contact -%}
+                    {%- when Contact::Phone with (p) -%}
+                    Phone:</span>&nbsp;<a href="tel:{{ p }}">{{ p }}</a></span>
+                    {%- when Contact::Email with (e) -%}
+                    Email:</span>&nbsp;<a href="mailto:{{ e }}">{{ e }}</a></span>
+                    {%- when Contact::Link with (n, l)-%}
+                    {{ n }}:</span>&nbsp;<a href="https://{{ l }}">{{ l }}</a></span>
+                {% endmatch %}
         </li>
     {% endfor %}
 </ul>

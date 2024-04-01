@@ -57,3 +57,13 @@ where
         Self(iter.into_iter().map(Experience::from).collect())
     }
 }
+#[derive(Template, Default, Deserialize)]
+#[template(path = "components/education_list.html")]
+pub struct EducationList<'a>(#[serde(borrow)] Vec<&'a str>);
+
+impl<'a> FromIterator<&'a str> for EducationList<'a>
+{
+    fn from_iter<T: IntoIterator<Item = &'a str>>(iter: T) -> Self {
+        Self(iter.into_iter().collect())
+    }
+}

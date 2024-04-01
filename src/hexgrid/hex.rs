@@ -1,16 +1,18 @@
 use askama::Template;
+use serde::Deserialize;
 
-#[derive(Template)]
+#[derive(Template, Deserialize)]
 #[template(path = "hex.html")]
-pub struct Hex(Content);
+#[serde(transparent)]
+pub struct Hex<'a>(#[serde(borrow)] Content<'a>);
 
-impl Hex {
-    pub fn new(content: Content) -> Self {
+impl<'a> Hex<'a> {
+    pub fn new(content: Content<'a>) -> Self {
         Self(content)
     }
 }
-
-pub enum Content {
-    Text(String),
-    Img(String),
+#[derive(Deserialize)]
+pub enum Content<'a> {
+    Text(&'a str),
+    Img(&'a str),
 }

@@ -2,16 +2,17 @@ use askama::Template;
 use askama_axum::IntoResponse;
 use axum::response::Html;
 use chrono::NaiveDate;
+use serde::Deserialize;
 
 use crate::{
     components::{
-        ContactList, ExperienceList, InterestList, MaybeInterestList, Me, SkillList, TimeRange,
+        ContactList, ExperienceList, EducationList, InterestList, MaybeInterestList, Me, SkillList, TimeRange,
     },
     hexgrid::{Content, Hexgrid},
 };
 
 pub const BG_ID: &str = "bg-gradient";
-
+#[derive(Deserialize)]
 struct Gradient<'a> {
     start: &'a str,
     end: &'a str,
@@ -26,17 +27,30 @@ impl<'a> Default for Gradient<'a> {
     }
 }
 
-#[derive(Template, Default)]
+#[derive(Template, Default, Deserialize)]
 #[template(path = "cv.html")]
-struct CV<'g, 'c, 'e, 's, 'm, 'a, 'i> {
+struct CV<'g, 'cn, 'ci, 'e, 's, 'm, 'a, 'i, 'h> {
+    #[serde(borrow)]
     gradient: Gradient<'g>,
+    #[serde(borrow)]
     me: Me<'m>,
     about: &'a str,
+    #[serde(borrow)]
+    education: EducationList<'e>,
+    #[serde(borrow)]
     experience: ExperienceList<'e>,
+    #[serde(borrow)]
     interests: InterestList<'i>,
-    contact: ContactList<'c>,
+    #[serde(borrow)]
+    contact: ContactList<'ci, 'cn>,
+    #[serde(borrow)]
     skills: SkillList<'s>,
-    capabilities: Hexgrid,
+    #[serde(borrow)]
+    qualities: Hexgrid<'h>,
+}
+
+fn htmlize(s: &str) -> String {
+    s.replace('\n', "<br>")
 }
 
 pub async fn cv_page() -> impl IntoResponse {

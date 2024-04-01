@@ -1,9 +1,11 @@
 use anyhow::Result;
 use askama::Template;
+use serde::Deserialize;
 
-#[derive(Template, Default)]
+#[derive(Template, Default, Deserialize)]
 #[template(path = "components/interest_list.html"t)]
-pub struct InterestList<'a>(Vec<Interest<'a>>);
+#[serde(transparent)]
+pub struct InterestList<'a>(#[serde(borrow)] Vec<Interest<'a>>);
 
 pub struct MaybeInterestList<'a>(pub Result<InterestList<'a>>);
 
@@ -27,7 +29,7 @@ impl<'a> TryFrom<&'a str> for Interest<'a> {
         })
     }
 }
-
+#[derive(Deserialize)]
 struct Interest<'a> {
     interest_icon: &'a str,
 }
