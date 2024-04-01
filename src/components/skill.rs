@@ -1,14 +1,16 @@
 use anyhow::Result;
 use askama::Template;
+use serde::Deserialize;
 
-#[derive(Template, Default)]
+#[derive(Template, Default, Deserialize)]
 #[template(path = "components/skill_list.html")]
 pub struct SkillList<'a> {
+    #[serde(borrow)]
     skills: Vec<Skill<'a>>,
     summary: &'a str,
 }
 
-#[derive(Default)]
+#[derive(Default, Deserialize)]
 pub struct Skill<'a> {
     name: &'a str,
     experience: usize,
