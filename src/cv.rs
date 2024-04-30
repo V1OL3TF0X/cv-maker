@@ -6,24 +6,85 @@ use serde::Deserialize;
 
 use crate::{
     components::{
-        ContactList, ExperienceList, EducationList, InterestList, MaybeInterestList, Me, SkillList, TimeRange,
+        ContactList, EducationList, ExperienceList, InterestList, MaybeInterestList, Me, SkillList,
+        TimeRange,
     },
     hexgrid::{Content, Hexgrid},
 };
 
 pub const BG_ID: &str = "bg-gradient";
 #[derive(Deserialize)]
-struct Gradient<'a> {
-    start: &'a str,
-    end: &'a str,
+#[serde(transparent)]
+struct Gradient<'a>(#[serde(borrow)] Vec<GradientStop<'a>>);
+
+#[derive(Deserialize)]
+struct GradientStop<'a> {
+    color: &'a str,
+    stop: Option<f64>,
+}
+
+impl<'a> From<&'a str> for GradientStop<'a> {
+    fn from(color: &'a str) -> Self {
+        Self { color, stop: None }
+    }
+}
+
+impl<'a> From<(&'a str, Option<f64>)> for GradientStop<'a> {
+    fn from((color, stop): (&'a str, Option<f64>)) -> Self {
+        Self { color, stop }
+    }
 }
 
 impl<'a> Default for Gradient<'a> {
     fn default() -> Self {
-        Self {
-            start: "#B008C4",
-            end: "#FE7500",
-        }
+        Self::from_iter(vec![("#B008C4", None), ("#FE7500", None)])
+    }
+}
+
+impl<'a> GradientStop<'a> {
+    fn to_var(&self, i: usize) -> String {
+        format!("--gradient-{i}: {color}", color = self.color)
+    }
+    fn stop_attrs(&self, i: &usize, total: usize) -> String {
+        let i = *i - 1;
+        let offset = self.stop.unwrap_or(i as f64 / (total - 1) as f64);
+        format!("offset=\"{offset}\" stop-color=\"var(--gradient-{i})\"")
+    }
+}
+
+impl<'a, I> FromIterator<I> for Gradient<'a>
+where
+    GradientStop<'a>: From<I>,
+{
+    fn from_iter<T: IntoIterator<Item = I>>(iter: T) -> Self {
+        Self(iter.into_iter().map(GradientStop::from).collect())
+    }
+}
+
+impl<'a> Gradient<'a> {
+    fn css_vars(&self) -> String {
+        let (all_vars, var_defs): (Vec<_>, Vec<_>) = self
+            .0
+            .iter()
+            .enumerate()
+            .map(|(i, stop)| {
+                (
+                    format!(
+                        "var(--gradient-{i}) {stop_pr}",
+                        stop_pr = stop
+                            .stop
+                            .map(|s| format!("{}% ", s * 100.0))
+                            .unwrap_or_default()
+                    ),
+                    stop.to_var(i),
+                )
+            })
+            .unzip();
+        format!(
+            "{}; --gradient-stops: {};",
+            var_defs.join("; "),
+            all_vars.join(", ")
+        )
     }
 }
 
@@ -50,7 +111,8 @@ struct CV<'g, 'cn, 'ci, 'e, 's, 'm, 'a, 'i, 'h> {
 }
 
 fn htmlize(s: &str) -> String {
-    s.replace('\n', "<br>")
+    let re = regex::Regex::new(r"\b([^ ]) ").unwrap();
+    re.replace_all(s, "$1&nbsp;").replace('\n', "<br>")
 }
 
 pub async fn cv_page() -> impl IntoResponse {
