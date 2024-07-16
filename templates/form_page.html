@@ -1,0 +1,78 @@
+{% extends "base.html" %} {% import "macros.html" as macros %} {% block title %}
+Enter your CV details {% endblock %} {% block head %}
+<script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
+<script src="https://unpkg.com/htmx.org@2.0.1"></script>
+<link rel="stylesheet" href="/assets/form.css" />
+<script type="module">
+    function observe(element, event, handler) {
+        element.addEventListener(event, handler, false);
+    }
+    const textEls = document.querySelectorAll(".input-field textarea");
+
+    function resize(e) {
+        const el = e.target;
+        el.style.height = el.scrollHeight + "px";
+    }
+    /* 0-timeout to get the already changed text */
+    function delayedResize(e) {
+        setTimeout(() => resize(e), 0);
+    }
+    textEls.forEach((text) => {
+        observe(text, "change", resize);
+        observe(text, "cut", delayedResize);
+        observe(text, "paste", delayedResize);
+        observe(text, "drop", delayedResize);
+        observe(text, "keydown", delayedResize);
+        resize({target: text});
+    });
+</script>
+<script type="text/hyperscript">
+  js
+      const regex = /\[(\d+)\]/i
+      function incr(el) {
+          el.querySelectorAll(':is(input,textarea)').forEach(i => {
+              const toSwap = i.id.replace(regex, (_, num) => `[${+num + 1}]`);
+              const label = el.querySelector(`label[for="${i.id}"]`);
+              if (label) {
+                  label.setAttribute('for', toSwap)
+              }
+              i.id = toSwap;
+              i.setAttribute('name', toSwap);
+          })
+      }
+      const contactLabels = { Phone: 'Phone Number', Link: 'Link name' };
+      const contactInputTypes = { Phone: 'tel', Link: 'text', Email: 'email' };
+      const inputType = /(Phone)|(Link\]\[0)|(Email)/i
+      function updateType(el) {
+          const infoGroup = el.closest('.input-group').firstElementChild;
+          const infoInput = infoGroup.querySelector('input');
+          const label = infoGroup.querySelector('label');
+          label.textContent = contactLabels[el.value] ?? el.value;
+          const toSwap = infoInput.id.replace(inputType, el.value);
+          infoInput.id = toSwap;
+          infoInput.name = toSwap;
+          label.setAttribute('for', toSwap);
+          const linkHref = infoGroup.nextElementSibling.querySelector('input');
+          if (el.value === 'Link') {
+              linkHref.removeAttribute('disabled');
+              linkHref.value = '';
+          } else {
+              linkHref.setAttribute('disabled', true);
+          }
+          infoInput.value = '';
+      }
+  end
+</script>
+{% endblock %} {% block content %}
+<div class="container">
+    <div class="form-container">
+        <form id="init_with_file" hx-target="#CV-info" hx-swap="outerHTML" enctype="multipart/form-data"
+            hx-post="cv/file">
+            <input type="file" name="file" accept="text/yaml,.yaml" required>
+            <button> Fill form with data from .yaml file </button>
+        </form>
+        {% let init = CV::default() %} {% include "form.html" %}
+        <button type="submit" form="CV-info">Generate CV</button>
+    </div>
+</div>
+{% endblock %}

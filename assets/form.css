@@ -38,13 +38,12 @@ body {
   background-color: rgba(255, 255, 255, 0.3);
   border-radius: 12px;
 }
-#form-slider{
+#form-slider {
   display: flex;
   transition: 0.4s linear;
-
 }
 .form-btn {
-    text-align: center;
+  text-align: center;
 }
 .form-btn span {
   display: inline-block;
@@ -77,11 +76,11 @@ form {
   &:has(:invalid) {
     --txt-color: #f00;
   }
-textarea {
+  textarea {
     resize: none;
     overflow: hidden;
     max-height: 6em;
-}
+  }
 }
 
 label {
@@ -91,7 +90,7 @@ label {
   text-transform: capitalize;
   &:not(.checkbox) {
     position: absolute;
-    top: .6em;
+    top: 0.6em;
     z-index: 1;
     pointer-events: none;
   }
@@ -99,29 +98,34 @@ label {
 }
 
 .input-field {
-    :is(input, textarea, select) {
-  color: var(--txt-color);
-  font-size: 1.35em;
-  display: block;
-  padding: 5px 0px;
-  width: 100%;
-  border: none;
-  background-color: transparent;
-  border-bottom: 2px solid var(--txt-color);
-  outline: none;
-  z-index: 2;
-  font-weight: 500;
-  &:is(:focus, :not(:placeholder-shown)) ~ label {
-    top: -20px;
-            font-size: .9em;
-    padding: 0;
+  :is(input, textarea, select) {
+    color: var(--txt-color);
+    font-size: 1.35em;
+    display: block;
+    padding: 5px 0px;
+    width: 100%;
+    border: none;
+    background-color: transparent;
+    border-bottom: 2px solid var(--txt-color);
+    outline: none;
+    z-index: 2;
+    font-weight: 500;
+    &:is(:focus, :not(:placeholder-shown)) ~ label {
+      top: -20px;
+      font-size: 0.9em;
+      padding: 0;
+    }
   }
+  select {
+    option {
+      background-color: var(--bg-color);
     }
-    select {
-        option {
-            background-color: var(--bg-color);
-        }
-    }
+  }
+  &.with-delete {
+    display: grid;
+    grid-template-columns: auto 24px;
+    gap: 0.5rem;
+  }
 }
 
 button[type="submit"] {
@@ -160,25 +164,28 @@ button[type="submit"] {
 }
 
 fieldset button {
-    align-self: end;
-    width: 100%;
-    cursor: pointer;
-    background: var(--bg-color);
-    border-radius: 5px;
+  align-self: end;
+  width: 100%;
+  cursor: pointer;
+  background: var(--bg-color);
+  border-radius: 5px;
 }
 
 fieldset {
-    max-height: 500px;
-    border: 2px solid var(--bg-color);
-    border-radius: 5px;
-    padding: 10px;
-    overflow-y: scroll;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: .2rem;
-    legend {
-        padding: 0 .4em;
-        background-color: var(--bg-color);
-        border-radius: 999vmax;
-    }
+  max-height: 500px;
+  border: 2px solid var(--bg-color);
+  border-radius: 5px;
+  padding: 10px;
+  overflow-y: scroll;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.2rem;
+  &:has(.with-delete) {
+    align-items: start;
+  }
+  legend {
+    padding: 0 0.4em;
+    background-color: var(--bg-color);
+    border-radius: 999vmax;
+  }
 }

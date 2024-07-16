@@ -6,9 +6,14 @@ use serde::{Deserialize, Serialize};
 #[derive(Template, Serialize, Deserialize)]
 #[template(path = "components/me.html")]
 pub struct Me {
+    #[serde(default = "blank_photo")]
     pub photo_url: Arc<str>,
     pub title: Arc<str>,
     pub name: Arc<str>,
+}
+
+fn blank_photo() -> Arc<str> {
+    "/assets/blank_pic.png".into()
 }
 
 impl Default for Me {
@@ -18,16 +23,6 @@ impl Default for Me {
             photo_url: empty.clone(),
             title: empty.clone(),
             name: empty,
-        }
-    }
-}
-
-impl Me {
-    pub fn new(url: &str, name: &str, title: &str) -> Self {
-        Self {
-            photo_url: Arc::from(url),
-            title: Arc::from(title),
-            name: Arc::from(name),
         }
     }
 }

@@ -10,6 +10,19 @@ pub enum Contact {
     Link(Arc<str>, Arc<str>),
 }
 
+impl Contact {
+    pub fn c_type(&self) -> &str {
+        match self {
+            Contact::Phone(_) => "Phone",
+            Contact::Email(_) => "Email",
+            Contact::Link(_, _) => "Link",
+        }
+    }
+    pub fn types() -> impl Iterator<Item = &'static str> {
+        ["Phone", "Link", "Email"].into_iter()
+    }
+}
+
 impl Default for Contact {
     fn default() -> Self {
         let empty: Arc<str> = "".into();
@@ -36,7 +49,7 @@ impl From<(&str, &str)> for Contact {
 #[derive(Template, Default, Serialize, Deserialize)]
 #[serde(transparent)]
 #[template(path = "components/contact.html")]
-pub struct ContactList(Vec<Contact>);
+pub struct ContactList(pub Vec<Contact>);
 
 impl<I> FromIterator<I> for ContactList
 where
