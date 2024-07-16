@@ -28,13 +28,13 @@ pub async fn cv_data(QsQuery(cv): QsQuery<CV>) -> Response<Body> {
 }
 
 #[derive(Template)]
-#[template(path = "form.html")]
+#[template(path = "form.html", whitespace = "suppress")]
 struct Form {
     init: CV,
 }
 
 #[derive(Template)]
-#[template(path = "form_page.html")]
+#[template(path = "form_page.html", whitespace = "suppress")]
 struct FormPage;
 
 pub async fn form() -> impl IntoResponse {

@@ -1,3 +1,15 @@
+@font-face {
+  font-family: "Montserrat Static";
+  src: url("/assets/montserrat.bold.ttf") format("truetype");
+}
+
+:root {
+  font-size: 16px;
+  font-family: "Montserrat", sans-serif;
+}
+a {
+  color: black;
+}
 :root {
   --txt-color: #fff;
   --bg-color: #000;
