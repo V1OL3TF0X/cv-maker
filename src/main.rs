@@ -1,20 +1,29 @@
 mod components;
 mod cv;
+mod filters;
+mod gradient;
 mod hexgrid;
+mod pages;
 use anyhow::Result;
-use axum::{response::Redirect, routing::get, Router};
-use std::os::windows::io::AsSocket;
+use axum::{handler::Handler, response::Redirect, routing::get, Extension, Router};
 use tower_http::services::ServeDir;
+
+const PORT: u32 = 3002;
 
 #[tokio::main]
 async fn main() -> Result<()> {
     let assets_dir = ServeDir::new("assets");
     let app = Router::new()
-        .route("/", get(cv::cv_page))
+        .route(
+            "/cv",
+            get(pages::cv).layer(Extension(serde_qs::axum::QsQueryConfig::new(5, false))),
+        )
+        .route("/cv/file", get(pages::cv_data))
+        .route("/", get(pages::form))
         .nest_service("/assets", assets_dir)
         .fallback(|| async { Redirect::to("/") });
-    let addr = tokio::net::TcpListener::bind("localhost:3002").await?;
-    println!("Listening on {:?}", addr.as_socket());
+    let addr = tokio::net::TcpListener::bind(&format!("localhost:{PORT}")).await?;
+    println!("Listening on http://localhost:{PORT}");
     axum::serve(addr, app).await?;
     Ok(())
 }

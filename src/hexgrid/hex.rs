@@ -1,18 +1,26 @@
+use std::sync::Arc;
+
 use askama::Template;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Template, Deserialize)]
+#[derive(Template, Serialize, Deserialize)]
 #[template(path = "hex.html")]
-#[serde(transparent)]
-pub struct Hex<'a>(#[serde(borrow)] Content<'a>);
+pub struct Hex {
+    kind: Content,
+    pub value: Arc<str>,
+}
 
-impl<'a> Hex<'a> {
-    pub fn new(content: Content<'a>) -> Self {
-        Self(content)
+impl Hex {
+    pub fn new((value, kind): (String, Content)) -> Self {
+        Self {
+            value: value.into(),
+            kind,
+        }
     }
 }
-#[derive(Deserialize)]
-pub enum Content<'a> {
-    Text(&'a str),
-    Img(&'a str),
+
+#[derive(Serialize, Deserialize)]
+pub enum Content {
+    Text,
+    Img,
 }

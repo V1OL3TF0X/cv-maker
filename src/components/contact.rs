@@ -1,43 +1,46 @@
-use askama::Template;
-use serde::Deserialize;
+use std::sync::Arc;
 
-#[derive(Debug, Deserialize)]
-pub enum Contact<'a, 'b> {
-    Phone(&'a str),
-    Email(&'a str),
-    Link(&'b str, &'a str),
+use askama::Template;
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Serialize, Deserialize)]
+pub enum Contact {
+    Phone(Arc<str>),
+    Email(Arc<str>),
+    Link(Arc<str>, Arc<str>),
 }
 
-impl<'a, 'b> Default for Contact<'a, 'b> {
+impl Default for Contact {
     fn default() -> Self {
-        Self::Link("", "")
+        let empty: Arc<str> = "".into();
+        Self::Link(empty.clone(), empty)
     }
 }
 
-impl<'a, 'b> Contact<'a, 'b> {
-    fn new(kind: &'b str, info: &'a str) -> Self {
+impl Contact {
+    fn new(kind: &str, info: &str) -> Self {
         match kind {
-            "email" => Self::Email(info),
-            "phone" => Self::Phone(info),
-            v => Self::Link(v, info),
+            "email" => Self::Email(info.into()),
+            "phone" => Self::Phone(info.into()),
+            v => Self::Link(v.into(), info.into()),
         }
     }
 }
 
-impl<'a, 'b> From<(&'b str, &'a str)> for Contact<'a, 'b> {
-    fn from(value: (&'b str, &'a str)) -> Self {
+impl From<(&str, &str)> for Contact {
+    fn from(value: (&str, &str)) -> Self {
         Self::new(value.0, value.1)
     }
 }
 
-#[derive(Template, Default, Deserialize)]
+#[derive(Template, Default, Serialize, Deserialize)]
 #[serde(transparent)]
 #[template(path = "components/contact.html")]
-pub struct ContactList<'a, 'b>(#[serde(borrow)] Vec<Contact<'a, 'b>>);
+pub struct ContactList(Vec<Contact>);
 
-impl<'a, 'b, I> FromIterator<I> for ContactList<'a, 'b>
+impl<I> FromIterator<I> for ContactList
 where
-    Contact<'a, 'b>: From<I>,
+    Contact: From<I>,
 {
     fn from_iter<T: IntoIterator<Item = I>>(iter: T) -> Self {
         Self(iter.into_iter().map(Contact::from).collect())

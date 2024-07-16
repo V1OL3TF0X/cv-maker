@@ -1,17 +1,8 @@
 {% macro bg_svg(rot, is_hex) %}
-    <svg class="bg" viewBox="0 0 1 1" width="100%" height="100%">
-        <circle
-            cx="0.5"
-            cy="0.5"
-            r="1.41423"
-            {% if is_hex %}
-            fill="url(#{{ crate::cv::BG_ID }}-hex)"
-            {% else %}
-            fill="url(#{{ crate::cv::BG_ID }})"
-            {% endif %}
-            transform="rotate({{ rot }}, 0.5, 0.5)"
-        />
-    </svg>
+<svg class="bg" viewBox="0 0 1 1" width="100%" height="100%">
+    <circle cx="0.5" cy="0.5" r="1.41423" {% if is_hex %} fill="url(#{{ crate::gradient::BG_ID }}-hex)" {% else %}
+        fill="url(#{{ crate::gradient::BG_ID }})" {% endif %} transform="rotate({{ rot }}, 0.5, 0.5)" />
+</svg>
 {% endmacro %}
 
 {% macro section_title(title) %}
@@ -19,7 +10,7 @@
 {% endmacro%}
 
 {% macro gradient_headline(title) %}
-<svg viewBox="0 0 100 1.2rem" class="gradient-headline" width="100%" fill="url(#{{ crate::cv::BG_ID}}-rev)">
-    <text x="0" y="1rem">{{ title }}</text>
+<svg viewBox="0 0 100 1.2rem" class="gradient-headline" width="100%" fill="url(#{{ crate::gradient::BG_ID}}-rev)">
+    <text x="0" y="1rem">{{ title|safe }}</text>
 </svg>
 {% endmacro %}

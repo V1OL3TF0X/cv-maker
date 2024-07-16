@@ -1,10 +1,12 @@
 use std::fmt::Display;
+use std::sync::Arc;
 
+use crate::filters;
 use askama::Template;
 use chrono::NaiveDate;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Default, Deserialize)]
+#[derive(Debug, Default, Serialize, Deserialize)]
 pub enum TimeRange {
     #[default]
     Present,
@@ -20,50 +22,63 @@ impl Display for TimeRange {
     }
 }
 
-#[derive(Default, Deserialize)]
-pub struct Experience<'a> {
-    from: NaiveDate,
-    to: TimeRange,
-    description: &'a str,
-    name: &'a str,
+#[derive(Serialize, Deserialize)]
+pub struct Experience {
+    pub from: NaiveDate,
+    pub to: TimeRange,
+    pub description: Arc<str>,
+    pub name: Arc<str>,
 }
 
-impl<'a> Experience<'a> {
-    pub fn new(from: NaiveDate, to: TimeRange, name: &'a str, description: &'a str) -> Self {
+impl Default for Experience {
+    fn default() -> Self {
+        let empty: Arc<str> = "".into();
         Self {
-            from,
-            to,
-            name,
-            description,
+            from: Default::default(),
+            to: Default::default(),
+            description: empty.clone(),
+            name: empty,
         }
     }
 }
 
-impl<'a> From<(NaiveDate, TimeRange, &'a str, &'a str)> for Experience<'a> {
-    fn from(value: (NaiveDate, TimeRange, &'a str, &'a str)) -> Self {
+impl Experience {
+    pub fn new(from: NaiveDate, to: TimeRange, name: &str, description: &str) -> Self {
+        Self {
+            from,
+            to,
+            name: Arc::from(name),
+            description: Arc::from(description),
+        }
+    }
+}
+
+impl From<(NaiveDate, TimeRange, &str, &str)> for Experience {
+    fn from(value: (NaiveDate, TimeRange, &str, &str)) -> Self {
         Self::new(value.0, value.1, value.2, value.3)
     }
 }
 
-#[derive(Template, Default, Deserialize)]
+#[derive(Template, Default, Serialize, Deserialize)]
+#[serde(transparent)]
 #[template(path = "components/experience_list.html")]
-pub struct ExperienceList<'a>(#[serde(borrow)] Vec<Experience<'a>>);
+pub struct ExperienceList(pub Vec<Experience>);
 
-impl<'a, I> FromIterator<I> for ExperienceList<'a>
+impl<I> FromIterator<I> for ExperienceList
 where
-    Experience<'a>: From<I>,
+    Experience: From<I>,
 {
     fn from_iter<T: IntoIterator<Item = I>>(iter: T) -> Self {
         Self(iter.into_iter().map(Experience::from).collect())
     }
 }
-#[derive(Template, Default, Deserialize)]
+#[derive(Template, Default, Serialize, Deserialize)]
+#[serde(transparent)]
 #[template(path = "components/education_list.html")]
-pub struct EducationList<'a>(#[serde(borrow)] Vec<&'a str>);
+pub struct EducationList(pub Vec<Arc<str>>);
 
-impl<'a> FromIterator<&'a str> for EducationList<'a>
-{
+impl<'a> FromIterator<&'a str> for EducationList {
     fn from_iter<T: IntoIterator<Item = &'a str>>(iter: T) -> Self {
-        Self(iter.into_iter().collect())
+        Self(iter.into_iter().map(Arc::from).collect())
     }
 }

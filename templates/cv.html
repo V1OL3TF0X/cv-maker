@@ -1,19 +1,27 @@
 {% extends "base.html" %}
 {% import "macros.html" as macros %}
 {% block title %}CV - Mateusz Adamiec {% endblock %}
+{% block head %}
+    <link rel="stylesheet" href="/assets/cv.css" />
+{% endblock %}
 {% block content %}
 <div class="main_backdrop" style="{{ gradient.css_vars() }}"
     {% call macros::bg_svg(-45, true) %}
+    <a class="get_cv_data" href="/cv/file?{{ serde_qs::to_string(self).unwrap() }}" download>Download settings as a CV</a>
     <main class="cv_body">
         <section>
             {{ me|safe }}
             <section>
                 {% call macros::section_title("About me") %}
-                <p class="about">{{ about|safe }}</p>
+                <p class="about">{{ about|htmlize|safe }}</p>
             </section>
             <section>
-                {% call macros::section_title("Skills") %}
-                {{ skills|safe }}
+                {% call macros::section_title("Education") %}
+                {{ education|safe }}
+            </section>
+            <section>
+                {% call macros::section_title("Experience") %}
+                {{ experience|safe }}
             </section>
             <section>
                 {% call macros::section_title("Interests") %}
@@ -22,12 +30,8 @@
         </section>
         <section>
             <section>
-                {% call macros::section_title("Experience") %}
-                {{ experience|safe }}
-            </section>
-            <section>
-                {% call macros::section_title("Education") %}
-                {{ education|safe }}
+                {% call macros::section_title("Skills") %}
+                {{ skills|safe }}
             </section>
             <section>
             {% call macros::section_title("Qualities") %}
@@ -46,17 +50,17 @@
     </main>
       <svg style="position: absolute; width: 0; height: 0; pointer-events: none; user-select: none;">
       <defs>
-      <linearGradient id="{{ crate::cv::BG_ID }}">
+      <linearGradient id="{{ crate::gradient::BG_ID }}">
             {% for g_stop in gradient.0 %}
             <stop {{g_stop.stop_attrs(loop.index, gradient.0.len())|safe }} />
             {% endfor %}
         </linearGradient>
-        <linearGradient href="#{{ crate::cv::BG_ID }}" id="{{ crate::cv::BG_ID }}-rev" gradientTransform="rotate(180, 0.5, 0.5)" />
-        <linearGradient href="#{{ crate::cv::BG_ID }}" id="{{ crate::cv::BG_ID }}-top_right" gradientTransform="rotate(-45, 0.5, 0.5)" />
-        <linearGradient href="#{{ crate::cv::BG_ID}}" id="{{ crate::cv::BG_ID }}-hex" x1="30%" x2="70%" />
+        <linearGradient href="#{{ crate::gradient::BG_ID }}" id="{{ crate::gradient::BG_ID }}-rev" gradientTransform="rotate(180, 0.5, 0.5)" />
+        <linearGradient href="#{{ crate::gradient::BG_ID }}" id="{{ crate::gradient::BG_ID }}-top_right" gradientTransform="rotate(-45, 0.5, 0.5)" />
+        <linearGradient href="#{{ crate::gradient::BG_ID}}" id="{{ crate::gradient::BG_ID }}-hex" x1="30%" x2="70%" />
       </defs>
       <symbol id="gradient-circle" viewBox="0 0 2 2">
-        <circle fill="url(#{{ crate::cv::BG_ID }}-hex)" cx="1" cy="1" r=".70711" />
+        <circle fill="url(#{{ crate::gradient::BG_ID }}-hex)" cx="1" cy="1" r=".70711" />
       </symbol>
   </svg>
 </div>

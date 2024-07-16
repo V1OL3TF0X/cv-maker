@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+{% import "macros.html" as macros %}
+{% block title %} Enter your CV details {% endblock %}
+{% block head %}
+<script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
+<link rel="stylesheet" href="/assets/form.css">
+<script type="module">
+function observe(element, event, handler) {
+    element.addEventListener(event, handler, false);
+};
+const textEls = document.querySelectorAll('.input-field textarea');
+
+function resize (e) {
+    const el = e.target;
+    el.style.height = el.scrollHeight +'px';
+}
+/* 0-timeout to get the already changed text */
+function delayedResize (e) {
+    setTimeout(() => resize(e), 0);
+}
+textEls.forEach(text => {
+    observe(text, 'change',  resize);
+    observe(text, 'cut',     delayedResize);
+    observe(text, 'paste',   delayedResize);
+    observe(text, 'drop',    delayedResize);
+    observe(text, 'keydown', delayedResize);
+    resize({ target: text});
+})
+</script>
+<script type="text/hyperscript">
+js
+    const regex = /\[(\d+)\]/i
+    function incr(el) {
+        el.querySelectorAll(':is(input,textarea)').forEach(i => {
+            const toSwap = i.id.replace(regex, (_, num) => `[${+num + 1}]`);
+            const label = el.querySelector(`label[for="${i.id}"]`);
+            if (label) {
+                label.setAttribute('for', toSwap)
+            }
+            i.id = toSwap; 
+            i.setAttribute('name', toSwap);
+        })
+    }
+    const contactLabels = { Phone: 'Phone Number', Link: 'Link name' };
+    const contactInputTypes = { Phone: 'tel', Link: 'text', Email: 'email' };
+    const inputType = /(Phone)|(Link)|(Email)/i
+    function updateType(el) {
+        const infoGroup = el.closest('.input-group').firstElementChild;
+        const infoInput = infoGroup.querySelector('input');
+        const label = infoGroup.querySelector('label');
+        label.textContent = contactLabels[el.value] ?? el.value;
+        const toSwap = infoInput.id.replace(inputType, el.value);
+        infoInput.id = toSwap;
+        infoInput.name = toSwap;
+        label.setAttribute('for', toSwap);
+        const linkHref = infoGroup.nextElementSibling.querySelector('input');
+        if (el.value === 'Link') {
+            linkHref.removeAttribute('disabled');
+            linkHref.value = '';
+        } else {
+            linkHref.setAttribute('disabled', true);
+        }
+        infoInput.value = '';
+    }
+end
+</script>
+
+{% endblock %}
+{% macro input(name, input_type, label, attrs, value) %}
+<div class="input-field">
+    {% if input_type == "textarea" %}
+    <textarea id="{{ name }}" name="{{ name }}" rows="1" placeholder=" " {{ attrs|safe }} value="{{value}}"></textarea>
+    {% else %}
+    <input id="{{ name }}" type="{{ input_type }}" name="{{ name }}" placeholder=" " {{ attrs|safe }}>
+    {% endif %}
+    {% if label != "" %}
+    <label for="{{ name }}">{{ label }}</label>
+    {% endif %}
+</div>
+{% endmacro %}
+
+{% macro simple_input_list(name, initial, legend, label, input_type, attrs) %}
+<fieldset>
+    <legend>{{ legend }}</legend>
+    {% for val in initial %}
+    {% call input("{{name}}[{{loop.index }}]", input_type, label, attrs, val) %}
+    {% endfor %}
+    {% call input("{{name}}[{{initial.len()}}]", input_type, label, attrs, "") %}
+    <button type="button" aria-label="Add" _="on click get the previous .input-field then put its outerHTML before me then call incr(previous .input-field)">&#43;</button>
+</fieldset>
+{% endmacro %}
+{% macro gradient_input_group(data, i) %}
+{% let stop_v = data.stop_v() %}
+                    <div class="input-group">
+    {% call input("gradient[{{i}}][color]", "color", "Color", "", data.color) %}
+    {% call input("gradient[{{i}}][stop]", "range", "Offset", "min=\"0\" max=\"1\" step=\"0.05\"", stop_v) %}
+                    </div>
+{% endmacro %}
+{% macro experience_input_group(data, i) %}
+                <div class="input-group">
+        {% call input("experience[{{i}}][from]", "date", "From", "", data.from) %}
+        {% match data.to %} {% when TimeRange::Date with (date) %}
+        {% call input("experience[{{i}}][to][Date]", "date", "To", "_=\"on input set d to (me.value is not empty) then toggle [@disabled=d] on the <input/> in next .checkbox\"", date) %}
+        {% else %}
+        {% call input("experience[{{i}}][to][Date]", "date", "To", "_=\"on input set d to (me.value is not empty) then toggle [@disabled=d] on the <input/> in next .checkbox\" disabled=\"true\"", "") %}
+        {% endmatch %}
+                    <label class="checkbox">
+                        <input 
+                id="experience[{{i}}][to]"
+                            type="checkbox"
+                            value="Present"
+                name="experience[{{i}}][to]"
+                {% match data.to %}
+                    {% when TimeRange::Present %}
+                        checked="true"
+                    {% else %}
+                        disabled="true"
+                {%endmatch %}
+                            _="on click get the previous <input/> then toggle [@disabled] on it then set it.value to ''">
+                            Present
+                    </label>
+        {% call input("experience[{{i}}][description]", "textarea", "What", "", data.description) %}
+        {% call input("experience[{{i}}][name]", "text", "Where", "", data.description) %}
+                </div>
+{% endmacro %}
+{% macro skill_input_group(data, i) %}
+                    <div class="input-group">
+    {% call input("skills[skills][{{i}}][experience]", "range", "Experience level", "min=\"0\" max=\"100\" step=\"5\"", data.experience) %}
+    {% call input("skills[skills][{{i}}][name]", "text", "Skill", "", data.name) %}
+                    </div>
+{% endmacro %}
+{% macro contact_input_group(data, i) %}
+                    <div class="input-group">
+    {% call input("contact[{{i}}][{{ data.c_type()}}][0]", "phone", "Phone number", data.data) %}
+    {% match data %}
+    {% when Contact::Link with (link) %} 
+    {% call input("contact[{{i}}][Link][1]", "url", "Link href", "", link) %}
+    {% else %}
+    {% call input("contact[{{i}}][Link][1]", "url", "Link href", "disabled=\"true\"", "") %}
+    {% endmatch %}
+                    <div class="input-field">    
+        <select id="contact[{{i}}][type]" value="{{ data.c_type() }}" _="on change or load call updateType(me)">
+                            <option>Phone</option>
+                            <option>Link</option>
+                            <option>Email</option>
+                        </select>
+                        <label>Contact type</label>
+                        </div>
+                    </div>
+{% endmacro %}
+{% block content %}
+<div class="container">
+    <div class="form-container">
+        <form
+            id="CV-info"
+            action="/cv"
+            _="on submit get <:is(input,textarea)/> in me then repeat for i in it if (i.value is empty or (i@type is 'checkbox' and i.checked is false)) remove @name from i end end"
+            >
+            <fieldset>
+                <legend> Basic info</legend>
+                {% call input("me[name]", "text", "Name", "required", value=init.me.name) %}
+                {% call input("me[title]", "text", "Position", "required", value=init.me.title) %}
+                {% call input("about", "textarea", "About me", "required", value=init.about) %}
+            </fieldset>
+                <fieldset>
+                    <legend>Gradient steps</legend>
+                {% for grad in init.gradient.0 %}
+                {% call gradient_input_group(grad,i=loop.index()) %}
+                    {% endfor %}
+                    {% call gradient_input_group(crate::gradient::GradientStop::default(), init.gradient.0.len()) %}
+                    <button type="button" aria-label="Add" _="on click get the previous .input-group then put its outerHTML before me then call incr(previous .input-group)">&#43;</button>
+                </fieldset>
+            {% call simple_input_list("education", init.education.0, "Your education", "Education point", "text", "") %}
+                <fieldset>
+                    <legend>Your Experience</legend>
+                {% for exp in init.experience.0 %}
+                {% call experience_input_group(exp,i=loop.index()) %}
+                    {% endfor %}
+                    {% call experience_input_group(crate::components::Experience::default(), init.experience.0.len()) %}
+                    <button type="button" aria-label="Add" _="on click get the previous .input-group then put its outerHTML before me then call incr(previous .input-group)">&#43;</button>
+                </fieldset>
+            {% call simple_input_list("interests", init.interests.0, "Your interests", "Svg url", "text", "") %}
+            <fieldset>
+                <legend>Your skills</legend>
+                <fieldset>
+                    <legend>Skill list</legend>
+                {% for skill in init.skills.skills %}
+                {% call skill_input_group(skill,i=loop.index()) %}
+                    {% endfor %}
+                    {% call skill_input_group(crate::components::Skill::default(), init.skills.skills.len()) %}
+                    <button type="button" aria-label="Add" _="on click get the previous .input-group then put its outerHTML before me then call incr(previous .input-group)">&#43;</button>
+                </fieldset>
+                </fieldset>
+                {% call input("skills[summary]", "textarea", "Summary", "", init.skills.summary) %}
+            </fieldset>
+            <fieldset>
+                    <legend>Your contact</legend>
+                {% for cont in init.contacts.0 %}
+                {% call contact_input_group(cont,i=loop.index()) %}
+                    {% endfor %}
+                    {% call cont_input_group(crate::components::Contact::default(), init.contacts.0.len()) %}
+                    <button type="button" aria-label="Add" _="on click get the previous .input-group then put its outerHTML before me then call incr(previous .input-group)">&#43;</button>
+            </fieldset>
+            {% call simple_input_list("qualities", init.qualities.0, "Your qualities", "Quality (2-3 words)", "text", "maxLength=\"40\"") %}
+        </form>
+        <button type="submit" form="CV-info">Generate CV</button>
+    </div>
+</div>
+{% endblock %}

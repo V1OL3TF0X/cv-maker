@@ -1,10 +1,12 @@
 {% import "macros.html" as macros %}
 <div class="hex_tile">
     {% call macros::bg_svg(135, true)%}
-     {% match self.0 %}
-        {% when Content::Img with (url) %}
-            <img src="{{ url }}">
-        {% when Content::Text with (text) %}
-         <div><p>{{ text }}</p> </div>
-            {% endmatch %} 
+    {% match kind %}
+    {% when Content::Img %}
+    <img src="{{ value }}">
+    {% when Content::Text %}
+    <div>
+        <p>{{ value }}</p>
+    </div>
+    {% endmatch %}
 </div>

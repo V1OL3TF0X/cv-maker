@@ -1,16 +1,15 @@
 use askama::Template;
 mod hex;
 
-pub use hex::*;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Template, Default, Deserialize)]
+#[derive(Template, Default, Serialize, Deserialize)]
 #[template(path = "hexgrid.html")]
 #[serde(transparent)]
-pub struct Hexgrid<'a>(#[serde(borrow)] Vec<hex::Hex<'a>>);
+pub struct Hexgrid(pub Vec<hex::Hex>);
 
-impl<'a> Hexgrid<'a> {
-    pub fn from_content(content: impl IntoIterator<Item = hex::Content<'a>>) -> Self {
+impl Hexgrid {
+    pub fn from_content(content: impl IntoIterator<Item = (String, hex::Content)>) -> Self {
         Self(content.into_iter().map(hex::Hex::new).collect())
     }
 }

@@ -20,18 +20,18 @@ body {
     margin: 0;
 }
 
-svg.bg  {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-}
-
 .main_backdrop {
     width:100%;
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+svg.bg  {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
 }
 
 .cv_body {
@@ -52,7 +52,6 @@ svg.bg  {
         width: 100%;
     }
 }
-
 
 .hex_main {
     display:flex;
@@ -98,6 +97,7 @@ svg.bg  {
 }
 
 .hex_tile img {
+    box-sizing: content-box;
     object-fit: cover;
     --p: var(--inside-space, calc(var(--m) * 1.5));
     --mh: calc(var(--p) * var(--hex-ratio));
@@ -144,6 +144,19 @@ svg.bg  {
     --m: .375rem;
     margin-bottom: 1px;
     flex-shrink: 0;
+    width: calc(var(--s)* var(--hex-ratio));
+    height: var(--s);
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    position: relative;
+    img {
+        position: absolute;
+        top: var(--p);
+        left: var(--mh);
+        padding: 0;
+        height: var(--w);
+        width: calc(var(--w)* var(--hex-ratio));
+        clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    }
 }
 
 .me_desc {
@@ -234,7 +247,6 @@ svg.bg  {
         list-style: none;
         margin: 0;
         display: grid;
-        grid-auto-rows: 1fr;
         gap: 0.7rem;
         padding: 0;
         li {
@@ -246,7 +258,19 @@ svg.bg  {
                 font-size: .9rem;
             }
             h5 {
+                position: relative;
                 font-size: 1.4rem;
+                &::before {
+                    content: '';
+                    position: absolute;
+                    width: 1rem;
+                    top: calc(.5lh - .5rem);
+                    z-index: 2;
+                    left: -1.9rem;
+                    height: 1rem;
+                    clip-path: circle(closest-side);
+                    background: linear-gradient(45deg, var(--gradient-0), var(--gradient-1));
+                }
             }
             p {
                 font-size: .8rem;
@@ -262,6 +286,7 @@ svg.bg  {
     position: relative;
     list-style: none;
     display: flex;
+    padding-left: 40px;
     flex-direction: column;
     gap: .3rem;
     li::before {
@@ -280,7 +305,7 @@ svg.bg  {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: .5rem;
     padding: 0;
 }
 .contact-kind {
@@ -330,6 +355,9 @@ footer {
     }
     :root {
         font-size: 12px;
+    }
+    .get_cv_data {
+        display: none;
     }
     .cv_body {
         width: 210mm;

@@ -1,20 +1,33 @@
-use askama::Template;
-use serde::Deserialize;
+use std::sync::Arc;
 
-#[derive(Template, Default, Deserialize)]
+use askama::Template;
+use serde::{Deserialize, Serialize};
+
+#[derive(Template, Serialize, Deserialize)]
 #[template(path = "components/me.html")]
-pub struct Me<'a> {
-    photo_url: &'a str,
-    title: &'a str,
-    name: &'a str,
+pub struct Me {
+    pub photo_url: Arc<str>,
+    pub title: Arc<str>,
+    pub name: Arc<str>,
 }
 
-impl<'a> Me<'a> {
-    pub fn new(url: &'a str, name: &'a str, title: &'a str) -> Self {
+impl Default for Me {
+    fn default() -> Self {
+        let empty: Arc<str> = "".into();
         Self {
-            photo_url: url,
-            title,
-            name,
+            photo_url: empty.clone(),
+            title: empty.clone(),
+            name: empty,
+        }
+    }
+}
+
+impl Me {
+    pub fn new(url: &str, name: &str, title: &str) -> Self {
+        Self {
+            photo_url: Arc::from(url),
+            title: Arc::from(title),
+            name: Arc::from(name),
         }
     }
 }

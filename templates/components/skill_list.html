@@ -8,5 +8,5 @@
         </div>
     </div>
     {% endfor %}
-    <p class="skill_summary"> {{ summary|safe }}</p>
+    <p class="skill_summary"> {{ summary|htmlize|safe }}</p>
 </div>
