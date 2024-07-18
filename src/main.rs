@@ -27,7 +27,7 @@ async fn main() -> Result<()> {
         .route("/", get(pages::form))
         .nest_service("/assets", assets_dir)
         .fallback(|| async { Redirect::to("/") });
-    let addr = tokio::net::TcpListener::bind(&format!("localhost:{PORT}")).await?;
+    let addr = tokio::net::TcpListener::bind(&format!("0.0.0.0:{PORT}")).await?;
     println!("Listening on http://localhost:{PORT}");
     axum::serve(addr, app).await?;
     Ok(())

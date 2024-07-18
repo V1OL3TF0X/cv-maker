@@ -79,6 +79,9 @@ form {
   display: grid;
   gap: 20px;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  &#CV-info {
+    grid-template-rows: repeat(3, minmax(auto, 500px));
+  }
 }
 .input-field {
   position: relative;
@@ -190,7 +193,6 @@ fieldset button {
 }
 
 fieldset {
-  max-height: 500px;
   border: 2px solid var(--bg-color);
   border-radius: 5px;
   padding: 10px;
@@ -201,6 +203,9 @@ fieldset {
   &:has(.with-delete) {
     align-items: start;
   }
+  > fieldset {
+   max-height: 350px;
+    }
 &:focus-within {
     border-color: var(--active-color);
 }
