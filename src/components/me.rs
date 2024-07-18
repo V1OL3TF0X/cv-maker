@@ -13,7 +13,7 @@ pub struct Me {
 }
 
 fn blank_photo() -> Arc<str> {
-    "/assets/blank_pic.png".into()
+    "/assets/nice.jpg".into()
 }
 
 impl Default for Me {

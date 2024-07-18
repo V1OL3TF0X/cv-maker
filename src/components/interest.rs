@@ -9,19 +9,6 @@ use serde::{Deserialize, Serialize};
 #[serde(transparent)]
 pub struct InterestList(pub Vec<Interest>);
 
-pub struct MaybeInterestList(pub Result<InterestList>);
-
-impl<'a> FromIterator<&'a str> for MaybeInterestList {
-    fn from_iter<T: IntoIterator<Item = &'a str>>(iter: T) -> Self {
-        Self(
-            iter.into_iter()
-                .map(Interest::try_from)
-                .collect::<Result<Vec<_>>>()
-                .map(InterestList),
-        )
-    }
-}
-
 impl TryFrom<&str> for Interest {
     type Error = anyhow::Error;
     fn try_from(value: &str) -> Result<Self, Self::Error> {

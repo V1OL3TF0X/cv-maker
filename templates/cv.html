@@ -52,7 +52,7 @@
       <defs>
       <linearGradient id="{{ crate::gradient::BG_ID }}">
             {% for g_stop in gradient.0 %}
-            <stop {{g_stop.stop_attrs(loop.index, gradient.0.len())|safe }} />
+            <stop {{+ g_stop.stop_attrs(loop.index, gradient.0.len())|safe }} />
             {% endfor %}
         </linearGradient>
         <linearGradient href="#{{ crate::gradient::BG_ID }}" id="{{ crate::gradient::BG_ID }}-rev" gradientTransform="rotate(180, 0.5, 0.5)" />

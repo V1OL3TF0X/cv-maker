@@ -3,7 +3,8 @@
     {% if input_type == "textarea" %}
     <textarea id="{{ name }}" name="{{ name }}" rows="1" placeholder=" " {{ attrs|safe }}>{{value}}</textarea>
     {% else %}
-    <input id="{{ name }}" type="{{ input_type }}" name="{{ name }}" placeholder=" " {{ attrs|safe }} value="{{value}}">
+    <input id="{{ name }}" type="{{ input_type }}" name="{{ name }}" placeholder=" " {{ attrs|safe +}}
+        value="{{value}}">
     {% endif %}
     {% if label != "" %}
     <label for="{{ name }}">{{ label }}</label>
@@ -37,7 +38,8 @@
 {% macro gradient_input_group(data, i) %}
 {% let stop_v = data.stop_v() %}
 <div class="input-group">
-    {% call input(format!("gradient[{i}][color]"), "color", "Color", "", data.color) %}
+    {% call input(format!("gradient[{i}][color]"), "color", "Color", "_=\"on paste log event then set me@value to
+    event.clipboardData.getData()\"", data.color) %}
     {% call input(format!("gradient[{i}][stop]"), "text", "Offset", "min=\"0\" max=\"1\" inputmode=\"numeric\"
     pattern=\"([0-9]?\\.)[0-9]*\"", stop_v) %}
     <button aria-label="Delete row" type="button" _="on click remove the parentElement of me">&times;</button>
@@ -60,7 +62,7 @@
         Present
     </label>
     {% call input(format!("experience[{i}][description]"), "textarea", "What", "", data.description) %}
-    {% call input(format!("experience[{i}][name]"), "text", "Where", "", data.description) %}
+    {% call input(format!("experience[{i}][name]"), "text", "Where", "", data.name) %}
     <button aria-label="Delete row" type="button" _="on click remove the parentElement of me">&times;</button>
 </div>
 {% endmacro %}
@@ -90,7 +92,7 @@
     <div class="input-field">
         <select id="contact[{{i}}][type]" _="on change call updateType(me)">
             {% for opt in Contact::types() %}
-            <option {% if opt==c_type %}selected{% endif %}>{{opt}}</option>
+            <option {%+ if opt==c_type %}selected{% endif %}>{{opt}}</option>
             {% endfor %}
         </select>
         <label>Contact type</label>
@@ -134,19 +136,21 @@
     {% call simple_input_list("interests", init.interests.0, "Your interests", "Svg url", "") %}
     <fieldset>
         <legend>Your skills</legend>
-        <fieldset>
-            <legend>Skill list</legend>
-            {% let last = init.skills.skills.len() %}
-            {% for skill in init.skills.skills %}
-            {% call skill_input_group(skill,i=(loop.index - 1)) %}
-            {% endfor %}
-            {% if last == 0 %}
-            {% call skill_input_group(crate::components::Skill::default(), i=last) %}
-            {% endif %}
-            <button type="button" aria-label="Add"
-                _="on click get the previous .input-group then put its outerHTML before me then call incr(previous .input-group)">&#43;</button>
-        </fieldset>
-        {% call input("skills[summary]", "textarea", "Summary", "", init.skills.summary) %}
+        <div>
+            <fieldset>
+                <legend>Skill list</legend>
+                {% let last = init.skills.skills.len() %}
+                {% for skill in init.skills.skills %}
+                {% call skill_input_group(skill,i=(loop.index - 1)) %}
+                {% endfor %}
+                {% if last == 0 %}
+                {% call skill_input_group(crate::components::Skill::default(), i=last) %}
+                {% endif %}
+                <button type="button" aria-label="Add"
+                    _="on click get the previous .input-group then put its outerHTML before me then call incr(previous .input-group)">&#43;</button>
+            </fieldset>
+            {% call input("skills[summary]", "textarea", "Summary", "", init.skills.summary) %}
+        </div>
     </fieldset>
     <fieldset>
         <legend>Your contact</legend>

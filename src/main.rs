@@ -19,11 +19,11 @@ const PORT: u32 = 3002;
 async fn main() -> Result<()> {
     let assets_dir = ServeDir::new("assets");
     let app = Router::new()
+        .route("/cv/file", get(pages::cv_data).post(pages::form_from_file))
         .route(
             "/cv",
             get(pages::cv).layer(Extension(serde_qs::axum::QsQueryConfig::new(5, false))),
         )
-        .route("/cv/file", get(pages::cv_data).post(pages::form_from_file))
         .route("/", get(pages::form))
         .nest_service("/assets", assets_dir)
         .fallback(|| async { Redirect::to("/") });
@@ -33,15 +33,24 @@ async fn main() -> Result<()> {
     Ok(())
 }
 
-pub struct AppError(anyhow::Error);
+pub struct AppError(pub StatusCode, anyhow::Error);
 
 impl IntoResponse for AppError {
     fn into_response(self) -> Response {
-        (
-            StatusCode::INTERNAL_SERVER_ERROR,
-            format!("Something went wrong: {}", self.0),
-        )
-            .into_response()
+        (self.0, format!("Something went wrong: {}", self.1)).into_response()
+    }
+}
+
+trait WithCode<O>: Sized {
+    fn with_code(self, code: StatusCode) -> Result<O, AppError>;
+}
+
+impl<O, E> WithCode<O> for Result<O, E>
+where
+    E: Into<anyhow::Error>,
+{
+    fn with_code(self, code: StatusCode) -> Result<O, AppError> {
+        self.map_err(|e| AppError(code, e.into()))
     }
 }
 
@@ -50,6 +59,6 @@ where
     E: Into<anyhow::Error>,
 {
     fn from(err: E) -> Self {
-        Self(err.into())
+        Self(StatusCode::UNPROCESSABLE_ENTITY, err.into())
     }
 }
