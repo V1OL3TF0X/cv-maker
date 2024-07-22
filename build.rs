@@ -3,10 +3,12 @@ use lightningcss::{
     bundler::{Bundler, FileProvider},
     stylesheet::{MinifyOptions, ParserFlags, ParserOptions, PrinterOptions},
 };
-use std::env;
-use std::fs::{read_dir, File};
 use std::io::Write;
 use std::path::PathBuf;
+use std::{
+    env,
+    fs::{create_dir_all, read_dir, File},
+};
 
 fn main() -> Result<()> {
     println!("cargo:rerun-if-changed=src/css");
@@ -16,6 +18,7 @@ fn main() -> Result<()> {
     css_root.push("css");
     let mut assets_root = root.clone();
     assets_root.push("assets");
+    create_dir_all(assets_root.clone())?;
     read_dir(css_root)?
         .filter_map(|e| e.ok().map(|e| e.path()))
         .filter(|fp| fp.extension().is_some_and(|e| e == "css"))
